@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Home | {{ block.super }} {% endblock title %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- CREATE NEW TWEET -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        {{ form }}
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            Post Tweet
+                        </button>
+                    </form>        
+                </div>             
+            </div>                 
+
+            <!-- USER TWEETS -->
+            {% for tweet in my_tweets %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+
+                    <div class="d-flex">
+                        <!-- Profile Picture -->
+                        <div class="me-3">
+                            <a href="{% url 'accounts:profile-detail' tweet.author.profile.pk %}">
+                                <img src="{{ tweet.author.profile.profile_picture_url }}" 
+                                     alt="{{ tweet.author.username }} profile pic"
+                                     class="rounded-circle"
+                                     style="width:50px; height:50px; object-fit:cover;">
+                            </a>
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <!-- Username and timestamp -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong>{{ tweet.author.username }}</strong>
+                                <small class="text-muted">
+                                    {{ tweet.created_at|timesince }} ago
+                                </small>
+                            </div>
+
+                            <!-- Tweet content -->
+                            <p class="mt-2 mb-2">{{ tweet.content }}</p>
+
+                            <!-- Action row: Likes, comments count, and comment input -->
+                            <div class="d-flex justify-content-start align-items-center mb-2">
+
+                                <!-- Likes count -->
+                                <div class="me-3">
+                                    ❤️ {{ tweet.likes.count }}
+                                </div>
+
+                                <!-- Comments count -->
+                                <div class="me-3">
+                                    💬 {{ tweet.comments.count }}
+                                </div>
+
+                                <!-- Add Comment Input -->
+                                <form method="POST" action="{% url 'comments:add-comment' tweet.id %}" class="d-flex flex-grow-1">
+                                    {% csrf_token %}
+                                    <input type="text" name="content" class="form-control form-control-sm me-2" placeholder="Write a comment..." required>
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Comment</button>
+                                </form>
+
+                            </div>
+
+                            <!-- Comments List -->
+                            <div class="comments-list">
+                                {% for comment in tweet.comments.all %}
+                                <div class="d-flex align-items-start mb-1">
+                                    <img src="{{ comment.author.profile.profile_picture_url }}" alt="profile pic" class="rounded-circle me-2" style="width:30px; height:30px; object-fit:cover;">
+                                    <div>
+                                        <strong>{{ comment.author.username }}</strong>
+                                        <small class="text-muted ms-1">{{ comment.created_at|timesince }} ago</small>
+                                        <p class="mb-0">{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Edit / Delete buttons -->
+                            {% if tweet.author == request.user %}
+                            <div class="mt-2">
+                                <a href="{% url 'tweets:tweet-update' tweet.id %}" class="btn btn-sm btn-outline-secondary me-2">
+                                    Edit
+                                </a>
+                                <a href="{% url 'tweets:tweet-delete' tweet.id %}" class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+                            </div>
+                            {% endif %}
+
+                        </div> <!-- End flex-grow-1 content -->
+
+                    </div> <!-- End d-flex tweet card -->
+
+                </div> <!-- End card-body -->
+            </div> <!-- End card mb-3 -->
+            {% empty %}
+            <div class="text-center text-muted">
+                You haven't posted anything yet.
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

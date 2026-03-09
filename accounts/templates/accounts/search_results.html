@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+
+   
+
+    <!-- Search Results -->
+    <ul class="list-group">
+        {% for user in users %}
+            <li class="list-group-item d-flex align-items-center">
+                
+                <!-- Profile Picture -->
+                <img src="{{ user.profile.profile_picture_url }}" 
+                     class="rounded-circle me-3" width="50" height="50" alt="Profile pic">
+
+                <!-- Username & Full Name -->
+                <div>
+                    <a href="{% url 'accounts:profile-detail' user.profile.pk %}" class="fw-bold text-dark">
+                        {{ user.username }}
+                    </a>
+                    {% if user.profile.full_name %}
+                        <div class="text-muted" style="font-size:0.9rem;">{{ user.profile.full_name }}</div>
+                    {% endif %}
+                </div>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-center text-muted">
+                No users found.
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

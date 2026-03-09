@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+
+    <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%; border-radius: 15px;">
+
+        <!-- Profile Image -->
+        <div class="text-center mb-3">
+            <img src="{{ profile.profile_picture_url }}" 
+                 class="rounded-circle border border-3 shadow-sm"
+                 width="130" height="130" alt="Profile Picture">
+        </div>
+
+        <!-- Username -->
+        <div class="text-center">
+            <h3 class="fw-bold">{{ profile.user.username }}</h3>
+        </div>
+
+        <!-- Email (optional) -->
+        <div class="text-center text-muted mb-2">
+            {{ profile.user.email }}
+        </div>
+
+        <!-- Bio -->
+        <div class="text-center mt-3">
+            <p class="text-muted">
+                {{ profile.bio|default:"This user hasn't added a bio yet." }}
+            </p>
+        </div>
+
+        <div class="text-center mt-3">
+            <p class="text-muted">
+                Location: {{ profile.location}}
+            </p>
+        </div>
+        
+        <!-- Divider -->
+        <hr>
+
+        <!-- Joined Date -->
+        <div class="text-center text-muted mb-3">
+            Joined {{ profile.joined_date|date:"F Y" }}
+        </div>
+
+        
+
+        <!-- Edit Button -->
+        {% if request.user == profile.user %}
+        <div class="text-center">
+            <a href="{% url "accounts:profile-update" %}" 
+               class="btn btn-primary px-4 rounded-pill">
+                Edit Profile
+            </a>
+        </div>
+
+        <div class="text-center">
+            <a href="{% url "tweets:my_tweets" %}" 
+               class="btn btn-secondary px-4 rounded-pill">
+                View Tweets
+            </a>
+        </div>
+        {% endif %}
+        {% if request.user != profile.user %}
+            {% if is_following %}
+            <div>
+                
+                <form action="{% url "accounts:unfollow_user" profile.pk%}" method = "post">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-warning">Unfollow</button>
+                </form>
+                
+            </div>
+            {% else %}
+
+                <div>
+                <form action="{% url "accounts:follow" profile.pk%}" method = 'post'>
+                {% csrf_token %}
+                <button class="btn btn-sm btn-primary follow-btn" type = "submit" >Follow</button>
+                </form>
+            </div>
+            
+            {% endif %}
+
+            <!-- Tweets Section -->
+        <h5 class="mt-4 mb-3 fw-bold">Tweets of {{ profile.full_name }}</h5>
+
+        {% for tweet in user_tweets %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body d-flex">
+
+                <!-- Profile Picture -->
+                <div class="me-3">
+                    <a href="{% url 'accounts:profile-detail' tweet.author.profile.pk %}">
+                        <img src="{{ tweet.author.profile.profile_picture_url }}"
+                            alt="{{ tweet.author.username }} profile pic"
+                            class="rounded-circle"
+                            style="width:50px; height:50px; object-fit:cover;">
+                    </a>
+                </div>
+
+                <!-- Tweet Content -->
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>
+                                <a href="{% url 'accounts:profile-detail' tweet.author.profile.pk %}" class="text-dark text-decoration-none">
+                                    {{ tweet.author.username }}
+                                </a>
+                            </strong>
+                            <small class="text-muted ms-2">{{ tweet.created_at|timesince }} ago</small>
+                        </div>
+
+                        <!-- Edit/Delete for author -->
+                        
+                    </div>
+
+                    <!-- Tweet Text -->
+                    <p class="mt-2">{{ tweet.content }}</p>
+
+                    <!-- Tweet Stats -->
+                    <div class="d-flex gap-3 mt-2 text-muted">
+                        
+                            <button type="submit" class = ".like-btn"  data-id = {{tweet.id}}
+                                    style="background:none; border:none; padding:0; cursor:pointer;">
+                                ❤️ 
+                            </button>
+                            <span id="like-count-{{ tweet.id }}">
+                                        {{ tweet.likes.count }}
+                            </span>
+            
+                        <div>💬 {{ tweet.comments.count }}</div>
+                        <div>🔁 {{ tweet.retweets.count }}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No tweets yet.</p>
+        {% endfor %}
+        {% endif %}
+
+
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block page_js %}
+
+<script>
+document.querySelectorAll(".like-btn").forEach(button => {
+    button.addEventListener("click", function() {
+        const tweetId = this.dataset.id;
+
+        fetch("{% url 'tweets:toggle-like' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "tweet_id=" + tweetId
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("like-count-" + tweetId).innerText = data.likes_count;
+
+            if (data.liked) {
+                this.innerText = "💓";
+            } else {
+                this.innerText = "❤️";
+            }
+        });
+    });
+});
+</script>
+
+{% endblock page_js %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Notifications | {{ block.super }}{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+
+        <!-- Left Sidebar: Mark as Read -->
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5 class="mb-3">Notifications</h5>
+                <form method="POST" action="{% url "notifications:mark_all_read" %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-sm w-100 mb-2">
+                        Mark all as read
+                    </button>
+                </form>
+                <small class="text-muted">Unread notifications are highlighted</small>
+            </div>
+        </div>
+
+        <!-- Main Notifications List -->
+        <div class="col-md-9">
+            {% for notification in notifications %}
+            <div class="card mb-3 shadow-sm {% if not notification.read %}border-primary{% endif %}">
+                <div class="card-body d-flex">
+                    
+                    <!-- Actor Profile Pic -->
+                    <a href="#">
+                        <img src="{{ notification.actor.profile.profile_picture_url }}" 
+                             class="rounded-circle me-3" style="width:50px; height:50px; object-fit:cover;" 
+                             alt="{{ notification.actor.username }} profile pic">
+                    </a>
+
+                    <!-- Notification Content -->
+                    <div class="flex-grow-1">
+                        <p class="mb-1">
+                            <strong>{{ notification.actor.username }}</strong>
+                            {{ notification.verb }}
+                        </p>
+                        <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+                    </div>
+
+                    <!-- Individual Mark as Read Button -->
+                    {% if not notification.read %}
+                    <form method="POST" action="{% url "notifications:mark_as_read" notification.id%}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Mark as read</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center text-muted mt-5">
+                No notifications yet.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

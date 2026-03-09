@@ -1,0 +1,87 @@
+<!-- LEFT SIDEBAR (STYLISH CARD) -->
+<div class="col-md-3 sidebar p-4">
+
+    <!-- Logo -->
+    <h3 class="logo mb-4 text-center fw-bold">RAKSA (Twitter)</h3>
+
+    <!-- Profile Card -->
+    <div class="card bg-dark text-white mb-4 shadow-sm">
+        <div class="card-body text-center">
+            <!-- Profile Picture -->
+            <img src="{{ request.user.profile.profile_picture_url }}" 
+                 class="rounded-circle mb-3" 
+                 style="width:100px; height:100px; object-fit:cover; border:2px solid #fff;">
+
+            <!-- Full Name -->
+            <h5 class="card-title mb-1">
+                <a href="{% url 'accounts:profile-detail' request.user.profile.pk %}" 
+                   class="text-white text-decoration-none fw-bold">
+                   {{ request.user.profile.full_name }}
+                </a>
+            </h5>
+
+            <!-- Username -->
+            <p class="text-muted mb-3">
+                <a href="{% url 'accounts:profile-detail' request.user.profile.pk %}" 
+                   class="text-decoration-none text-light">
+                   @{{ request.user.username }}
+                </a>
+            </p>
+
+            <!-- Followers / Following -->
+            <div class="d-flex justify-content-around mt-3">
+                <div>
+                    <h6 class="mb-0">{{ user_follower_count }}</h6>
+                    <small>
+                        <a href="{% url 'accounts:followers' request.user.profile.pk %}" 
+                           class="text-decoration-none text-light">Followers</a>
+                    </small>
+                </div>
+                <div>
+                    <h6 class="mb-0">{{ user_followings_count }}</h6>
+                    <small>
+                        <a href="{% url 'accounts:followings' request.user.profile.pk %}" 
+                           class="text-decoration-none text-light">Following</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'accounts:search_user' %}" class="mb-4 d-flex">
+        <input type="text" name="q" class="form-control me-2 rounded" placeholder="Search users..." value="{{ request.GET.q }}">
+        <button type="submit" class="btn btn-primary rounded">Search</button>
+    </form>
+
+    <hr class="text-light">
+
+    <!-- Navigation Menu -->
+    <ul class="nav flex-column menu mb-4">
+        <li class="nav-item mb-1">
+            <a href="{% url 'accounts:home' %}" class="nav-link active rounded py-2 px-3">Home</a>
+        </li>
+        <li class="nav-item mb-1">
+            <a href="{% url "notifications:notification-list" %}" class="nav-link rounded py-2 px-3">
+                Notifications <span class="badge bg-danger ms-2">{{notifications_count}}</span>
+            </a>
+        </li>
+        <li class="nav-item mb-1">
+            <a href="{% url 'tweets:my_tweets' %}" class="nav-link rounded py-2 px-3">My Tweets</a>
+        </li>
+        <li class="nav-item mb-1">
+            <a href="{% url 'accounts:profile-detail' request.user.profile.pk %}" class="nav-link rounded py-2 px-3">My Profile</a>
+        </li>
+    </ul>
+
+    <!-- Action Buttons -->
+    <a href="{% url 'accounts:password-change' %}" class="btn btn-primary w-100 mb-2 rounded">
+        Change Password
+    </a>
+
+    <form method="POST" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button class="btn btn-outline-light w-100 rounded">Logout</button>
+    </form>
+
+</div>

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="container mt-5 d-flex justify-content-center">
+
+    <div class="card shadow-lg p-4" style="max-width: 600px; width: 100%; border-radius: 15px;">
+
+        <h3 class="text-center mb-4">Update Profile</h3>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- User Form -->
+            <h5>User Info</h5>
+            <div class="mb-3">
+                {{ user_form.username.label_tag }}
+                {{ user_form.username|add_class:"form-control" }}
+                {% for error in user_form.username.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ user_form.email.label_tag }}
+                {{ user_form.email|add_class:"form-control" }}
+                {% for error in user_form.email.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+             <div class="mb-3">
+                {{ user_form.first_name.label_tag }}
+                {{ user_form.first_name|add_class:"form-control" }}
+                {% for error in user_form.first_name.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ user_form.last_name.label_tag }}
+                {{ user_form.last_name|add_class:"form-control" }}
+                {% for error in user_form.last_name.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <hr>
+
+            <!-- Profile Form -->
+            <h5>Profile Info</h5>
+            <div class="mb-3">
+                {{ profile_form.bio.label_tag }}
+                {{ profile_form.bio|add_class:"form-control" }}
+                {% for error in profile_form.bio.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+             <div class="mb-3">
+                {{ profile_form.location.label_tag }}
+                {{ profile_form.location|add_class:"form-control" }}
+                {% for error in profile_form.location.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ profile_form.profile_picture.label_tag }}
+                {{ profile_form.profile_picture }}
+                {% for error in profile_form.profile_picture.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5 rounded-pill">Save Changes</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+{% endblock %}

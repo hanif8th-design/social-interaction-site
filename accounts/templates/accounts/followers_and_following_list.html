@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Heading -->
+    <h3 class="mb-4">
+      {% if list_type == 'followers' %}
+        Followers
+      {% else %}
+        Following
+      {% endif %}
+    </h3>
+
+    <!-- List Card -->
+    <ul class="list-group shadow-sm">
+      {% for follow in follows %}
+        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+
+          <!-- User Info -->
+          <div class="d-flex align-items-center">
+            {% if list_type == 'followers' %}
+              <img src="{{ follow.follower.profile.profile_picture_url }}" 
+                   class="rounded-circle me-3" width="50" height="50" alt="profile pic">
+              <a href="{% url 'accounts:profile-detail' follow.follower.id %}">
+              <span class="fw-bold">{{ follow.follower.username }}</span>
+              </a>
+            {% else %}
+              <img src="{{ follow.following.profile.profile_picture_url }}" 
+                   class="rounded-circle me-3" width="50" height="50" alt="profile pic">
+              <a href="{% url "accounts:profile-detail" follow.following.id%}">
+              <span class="fw-bold">{{ follow.following.username }}</span>
+              </a>
+            {% endif %}
+          </div>
+
+          <!-- Action Button -->
+          <div>
+            {% if list_type == 'following' %}
+            <form action="{% url "accounts:unfollow_user" follow.following.profile.pk%}" method = "post">
+            {% csrf_token %}
+              <button class="btn btn-sm btn-warning">Unfollow</button>
+              </form>
+            {% endif %}
+          </div>
+
+        </li>
+      {% empty %}
+        <li class="list-group-item text-center text-muted">
+          No {{ list_type }} yet.
+        </li>
+      {% endfor %}
+    </ul>
+
+</div>
+{% endblock content %}

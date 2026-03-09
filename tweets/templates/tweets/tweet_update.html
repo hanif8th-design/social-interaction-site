@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Tweet | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Edit Tweet</h4>
+
+            <!-- Update Tweet Form -->
+            <form method="POST">
+                {% csrf_token %}
+                
+                <!-- Render form fields -->
+                {{ form.as_p }}
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{% url 'tweets:my_tweets' %}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Update Tweet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

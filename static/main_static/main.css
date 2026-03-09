@@ -1,0 +1,139 @@
+/* ===============================
+   GLOBAL
+=================================*/
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f3f4f6;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Layout container */
+.layout {
+    display: flex;
+}
+
+/* ===============================
+   LEFT SIDEBAR
+=================================*/
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 25%;
+    height: 100vh;
+    background: linear-gradient(to bottom, #1e88a8, #0d6e8a);
+    color: white;
+    padding: 30px 20px;
+    overflow-y: auto;
+}
+
+.logo {
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.profile-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+}
+
+/* Sidebar Menu */
+.menu .nav-link {
+    color: white;
+    padding: 10px 0;
+    text-decoration: none;
+}
+
+.menu .nav-link:hover {
+    opacity: 0.8;
+}
+
+/* Sidebar Buttons */
+.btn-download {
+    background-color: #6c7ae0;
+    color: white;
+    border: none;
+}
+
+.btn-logout {
+    background-color: #5b6ccf;
+    color: white;
+    border: none;
+}
+
+/* ===============================
+   CENTER FEED
+=================================*/
+
+.feed {
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    padding: 30px;
+    min-height: 100vh;
+    overflow-y: auto;
+}
+
+.post-box input {
+    border-radius: 20px;
+}
+
+.post {
+    border-radius: 15px;
+}
+
+/* ===============================
+   RIGHT SIDEBAR
+=================================*/
+
+.right-sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 25%;
+    height: 100vh;
+    background-color: white;
+    border-left: 1px solid #ddd;
+    padding: 30px 20px;
+    overflow-y: auto;
+}
+
+.follow-box {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.follow-btn {
+    font-size: 12px;
+}
+
+/* ===============================
+   FOOTER
+=================================*/
+
+.footer {
+    background: linear-gradient(to right, #0d6e8a, #1e88a8);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.footer-link {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+   
